@@ -7,8 +7,11 @@ import os
 from flask import Flask,request,send_file,jsonify
 app = Flask(__name__)
 Chem.WrapLogs()
-
 @app.route("/",methods=["GET"])
+def home():
+    if request.method == 'GET':
+        return "TRY /structure?smile=CCN(CCO)CCCC(C)NC1=C2C=CC(Cl)=CC2=NC=C1 or /describe?smile=CCN(CCO)CCCC(C)NC1=C2C=CC(Cl)=CC2=NC=C1"
+@app.route("/structure",methods=["GET"])
 def draw():
     if request.method == 'GET':
         mol_smile = request.args.get('smile')
