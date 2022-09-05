@@ -21,14 +21,16 @@ def draw():
             Draw.MolToImageFile(mol,filename="img.png",size = (200,200))
         except:
             if "SMILES Parse Error" in sio.getvalue():
-                return jsonify(
+                response = jsonify(
                     error="SMILES Parsing Error"
                 )
             else:
-                return jsonify(
+                response = jsonify(
                     error = "Unidentified Error"
                 )
-    return send_file("img.png",mimetype='image/png')
+        response = send_file("img.png",mimetype='image/png')
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 @app.route("/describe",methods=["GET"])
 def describe():
     if request.method == 'GET':
@@ -41,17 +43,19 @@ def describe():
             res = requests.get(f"https://cactus.nci.nih.gov/chemical/structure/{mol_smile}/iupac_name")
         except:
             if "SMILES Parse Error" in sio.getvalue():
-                return jsonify(
+                response = jsonify(
                     error="SMILES Parsing Error"
                 )
             else:
-                return jsonify(
+                response = jsonify(
                     error = "Unidentified Error"
                 )
-    return jsonify(
-            molname = res.text,
-            atoms = numAtoms,
-            bonds = numBonds,
-        )
+        response = jsonify(
+                molname = res.text,
+                atoms = numAtoms,
+                bonds = numBonds,
+            )
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
 if __name__ == "__main__":
     app.run(port=int(os.getenv('PORT')),debug=True) 
